@@ -12,7 +12,7 @@ $ git clone https://github.com/karry3775/SensorFusion.git
 
 ## Using the package
 - Connect your phone and computer to the same network (Hotspot can be used)
-- Enter ip address : 5000 to the URL field in PhonePi app
+- Enter ip address:5000 to the URL field in PhonePi app
 - run the following commands
 ```
 $ roscore
@@ -41,3 +41,21 @@ rostopic echo \<topic_name>
 - Accel_topic
 - Magneto_topic
 - Orientation_topic
+
+## Pushing and pulling from the Repo
+- Move to your local directory
+```
+$ git status
+```
+- Above command will let you know the status of the repo and your local directory
+```
+$ git pull origin master
+```
+- Above command will make sure that your local directory will update with changes that others might have made
+```
+$ git add .
+$ git commit -m "Descriptory message explaining the nature of the commit"
+$ git push origin master
+```
+- Above command will update the github repository with the changes you made in the local directory in your computer
+- Follow these steps sequentially to prevent improper syncing!
