@@ -37,10 +37,10 @@ rostopic echo \<topic_name>
 - This will stream data for the specific topic you want
 
 ## Topics
-- Gyro_topic
-- Accel_topic
-- Magneto_topic
-- Orientation_topic
+- Gyro_topic - Publishes angular rate information from Gyro (roll rate, pitch rate, yaw rate) (BODY FRAME)
+- Accel_topic - Publishes linear acceleration information from Accelerometer (a<sub>x</sub> , a<sub>y</sub>, a<sub>z</sub>) (BODY FRAME)
+- Magneto_topic - Publishes magnetic field information from Magnetometer (m<sub>x</sub> , m<sub>y</sub>, m<sub>z</sub>) (BODY FRAME)
+- Orientation_topic - Publishes (ground truth) orientation (roll, pitch, yaw) (GLOBAL FRAME)
 
 ## Pushing and pulling from the Repo
 - Move to your local directory
