@@ -1,7 +1,4 @@
-# Main code for the Coursera SDC Course 2 final project
-#
-# Author: Trevor Ablett
-# University of Toronto Institute for Aerospace Studies
+=
 
 import pickle
 import sys
