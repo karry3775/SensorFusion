@@ -13,6 +13,7 @@ $ git clone https://github.com/karry3775/SensorFusion.git
 ## Using the package
 - Connect your phone and computer to the same network (Hotspot can be used)
 - Enter ip address:5000 to the URL field in PhonePi app
+- ip addess could be find using ifconfig command on linux and ipconfig on windows. 
 - run the following commands
 ```
 $ roscore
