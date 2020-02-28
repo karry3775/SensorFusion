@@ -21,7 +21,7 @@ $ rosrun SensorFusion sensor_streamer.py
 ```
 - if the above command gives error then move to the location of this file
 ```
-$ roscd SensorFusion/src/
+$ cd SensorFusion/src/
 $ chmod +x sensor_streamer.py
 ```
 - The above line will make this file executable
