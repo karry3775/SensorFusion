@@ -32,7 +32,7 @@ accel_pub = rospy.Publisher("/Accel_topic", SensorMsg, queue_size = 10)
 magneto_pub = rospy.Publisher("/Magneto_topic", SensorMsg, queue_size = 10)
 orient_pub = rospy.Publisher("/Orientation_topic", SensorMsg, queue_size = 10)
 geoloc_pub = rospy.Publisher("/Geolocation_topic", SensorMsg, queue_size = 10)
-pose_pub = rospy.Publisher("/Pose_topic", Pose, queue_size = 10)
+pose_pub = rospy.Publisher("/Pose_topic", Pose, queue_size = 10) # for pose visualization in rviz
 """
 Code snippet from PhonePi.py
 """
@@ -47,6 +47,8 @@ def echo_socket(ws):
 		message = ws.receive()
 		accel_data = message.split(',')
 		accel_data = [float(data) for data in accel_data]
+		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
+		accel_data.insert(0, curtime)
 		accel_pub.publish(accel_data)
 		print("[INFO:] Accelerometer{}".format(accel_data))
         ws.send(message)
@@ -63,6 +65,8 @@ def echo_socket(ws):
 		message = ws.receive()
 		gyro_data = message.split(',')
 		gyro_data = [float(data) for data in gyro_data]
+		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
+		gyro_data.insert(0, curtime)
 		gyro_pub.publish(gyro_data)
 		print("[INFO:] Gyroscope{}".format(gyro_data))
         ws.send(message)
@@ -78,6 +82,8 @@ def echo_socket(ws):
 		message = ws.receive()
 		magneto_data = message.split(',')
 		magneto_data = [float(data) for data in magneto_data]
+		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
+		magneto_data.insert(0, curtime)
 		magneto_pub.publish(magneto_data)
 		print("[INFO:] Magnetometer{}".format(magneto_data))
         ws.send(message)
@@ -96,9 +102,11 @@ def echo_socket(ws):
 		message = ws.receive()
 		orient_data = message.split(',')
 		orient_data = [float(data) for data in orient_data]
+		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
+		orient_data.insert(0, curtime)
 		orient_pub.publish(orient_data)
 		### Publish to Pose topic for visualization ###
-		q = quaternion_from_euler(orient_data[0], orient_data[1], orient_data[2])
+		q = quaternion_from_euler(orient_data[1], orient_data[2], orient_data[3])
 		pose_msg = Pose()
 		pose_msg.orientation.x = q[0]
 		pose_msg.orientation.y = q[1]
@@ -122,6 +130,8 @@ def echo_socket(ws):
 		message = ws.receive()
 		geoloc_data = message.split(',')
 		geoloc_data = [float(data) for data in geoloc_data]
+		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
+		geoloc_data.insert(0, curtime)
 		geoloc_pub.publish(geoloc_data)
 		print("[INFO:] Geolocation{}".format(geoloc_data))
         ws.send(message)
