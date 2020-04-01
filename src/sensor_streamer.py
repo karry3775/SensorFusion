@@ -9,7 +9,7 @@ from flask import Flask
 from flask_sockets import Sockets
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
-from sensor_fusion_pkg.msg import SensorMsg
+from sensor_fusion_pkg.msg import SensorMsg, SensorMsgStamped
 from geometry_msgs.msg import Pose
 from tf.transformations import quaternion_from_euler
 
@@ -27,12 +27,13 @@ geoloc_data = []
 # lets create our publishers
 rospy.init_node("sensor_streamer_node",disable_signals=True)
 
-gyro_pub = rospy.Publisher("/Gyro_topic", SensorMsg, queue_size = 10)
-accel_pub = rospy.Publisher("/Accel_topic", SensorMsg, queue_size = 10)
-magneto_pub = rospy.Publisher("/Magneto_topic", SensorMsg, queue_size = 10)
-orient_pub = rospy.Publisher("/Orientation_topic", SensorMsg, queue_size = 10)
-geoloc_pub = rospy.Publisher("/Geolocation_topic", SensorMsg, queue_size = 10)
-pose_pub = rospy.Publisher("/Pose_topic", Pose, queue_size = 10) # for pose visualization in rviz
+## STAMPED PUBLISHERS
+gyro_pub_stamped = rospy.Publisher("/Gyro_topic_stamped", SensorMsgStamped, queue_size = 10)
+accel_pub_stamped = rospy.Publisher("/Accel_topic_stamped", SensorMsgStamped, queue_size = 10)
+magneto_pub_stamped = rospy.Publisher("/Magneto_topic_stamped", SensorMsgStamped, queue_size = 10)
+orient_pub_stamped = rospy.Publisher("/Orientation_topic_stamped", SensorMsgStamped, queue_size = 10)
+geoloc_pub_stamped = rospy.Publisher("/Geolocation_topic_stamped", SensorMsgStamped, queue_size = 10)
+
 """
 Code snippet from PhonePi.py
 """
@@ -41,15 +42,19 @@ sockets = Sockets(app)
 
 @sockets.route('/accelerometer')
 def echo_socket(ws):
-	global accel_data, accel_pub
 	f=open("accelerometer.txt","a")
 	while True:
 		message = ws.receive()
 		accel_data = message.split(',')
 		accel_data = [float(data) for data in accel_data]
-		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
-		accel_data.insert(0, curtime)
-		accel_pub.publish(accel_data)
+
+		stamped_msg = SensorMsgStamped()
+		stamped_msg.data = accel_data
+		stamped_msg.header.stamp.secs = Time.now().secs
+		stamped_msg.header.stamp.nsecs = Time.now().nsecs
+
+		accel_pub_stamped.publish(stamped_msg)
+
 		print("[INFO:] Accelerometer{}".format(accel_data))
         ws.send(message)
         print>>f,message
@@ -59,15 +64,19 @@ def echo_socket(ws):
 
 @sockets.route('/gyroscope')
 def echo_socket(ws):
-	global gyro_data, gyro_pub
 	f=open("gyroscope.txt","a")
 	while True:
 		message = ws.receive()
 		gyro_data = message.split(',')
 		gyro_data = [float(data) for data in gyro_data]
-		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
-		gyro_data.insert(0, curtime)
-		gyro_pub.publish(gyro_data)
+
+		stamped_msg = SensorMsgStamped()
+		stamped_msg.data = gyro_data
+		stamped_msg.header.stamp.secs = Time.now().secs
+		stamped_msg.header.stamp.nsecs = Time.now().nsecs
+
+		gyro_pub_stamped.publish(stamped_msg)
+
 		print("[INFO:] Gyroscope{}".format(gyro_data))
         ws.send(message)
         print>>f,message
@@ -82,9 +91,14 @@ def echo_socket(ws):
 		message = ws.receive()
 		magneto_data = message.split(',')
 		magneto_data = [float(data) for data in magneto_data]
-		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
-		magneto_data.insert(0, curtime)
-		magneto_pub.publish(magneto_data)
+
+		stamped_msg = SensorMsgStamped()
+		stamped_msg.data = magneto_data
+		stamped_msg.header.stamp.secs = Time.now().secs
+		stamped_msg.header.stamp.nsecs = Time.now().nsecs
+
+		magneto_pub_stamped.publish(stamped_msg)
+
 		print("[INFO:] Magnetometer{}".format(magneto_data))
         ws.send(message)
         print>>f,message
@@ -93,8 +107,6 @@ def echo_socket(ws):
 
 @sockets.route('/orientation')
 def echo_socket(ws):
-	global orient_data, orient_pub, pose_pub
-
 	b = TransformBroadcaster()
 
 	f=open("orientation.txt","a")
@@ -102,9 +114,14 @@ def echo_socket(ws):
 		message = ws.receive()
 		orient_data = message.split(',')
 		orient_data = [float(data) for data in orient_data]
-		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
-		orient_data.insert(0, curtime)
-		orient_pub.publish(orient_data)
+
+		stamped_msg = SensorMsgStamped()
+		stamped_msg.data = orient_data
+		stamped_msg.header.stamp.secs = Time.now().secs
+		stamped_msg.header.stamp.nsecs = Time.now().nsecs
+
+		orient_pub_stamped.publish(stamped_msg)
+
 		### Publish to Pose topic for visualization ###
 		q = quaternion_from_euler(orient_data[1], orient_data[2], orient_data[3])
 		pose_msg = Pose()
@@ -130,9 +147,14 @@ def echo_socket(ws):
 		message = ws.receive()
 		geoloc_data = message.split(',')
 		geoloc_data = [float(data) for data in geoloc_data]
-		curtime = Time.now().secs + Time.now().nsecs * 10 **(-9)
-		geoloc_data.insert(0, curtime)
-		geoloc_pub.publish(geoloc_data)
+
+		stamped_msg = SensorMsgStamped()
+		stamped_msg.data = geoloc_data
+		stamped_msg.header.stamp.secs = Time.now().secs
+		stamped_msg.header.stamp.nsecs = Time.now().nsecs
+
+		geoloc_pub_stamped.publish(stamped_msg)
+
 		print("[INFO:] Geolocation{}".format(geoloc_data))
         ws.send(message)
         print>>f,message
