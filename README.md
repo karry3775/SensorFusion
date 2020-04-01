@@ -17,7 +17,7 @@ $ git clone https://github.com/karry3775/SensorFusion.git
 - run the following commands
 ```
 $ roscore
-$ rosrun SensorFusion sensor_streamer.py
+$ rosrun sensor_fusion_pkg sensor_streamer.py
 ```
 - if the above command gives error then move to the location of this file
 ```
