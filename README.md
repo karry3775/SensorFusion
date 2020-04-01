@@ -29,7 +29,7 @@ $ chmod +x sensor_streamer.py
 - Current implementation only supports Accelerometer, Gyroscope, Magnetometer and Orientation data
 - You will see data printed on the terminal from which the following command was run
 ```
-$ rosrun SensorFusion sensor_streamer.py
+$ rosrun sensor_fusion_pkg sensor_streamer.py
 ```
 - Open another terminal and type
 ```
